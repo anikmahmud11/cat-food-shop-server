@@ -27,6 +27,7 @@ async function run() {
     const orderCollection = database.collection("orders");
     const reviewCollection = database.collection("review");
     const userCollection = database.collection("users");
+    const formDataCollection = database.collection("form-data");
 
     //GET Products API
     app.get("/products", async (req, res) => {
@@ -99,10 +100,19 @@ async function run() {
 
     //Add form
     app.post("/submit-form", async (req, res) => {
-      const formData = req.body;
-      console.log("Form Data:", formData);
-      const result = await reviewCollection.insertOne(formData);
-      res.json(result);
+      try {
+        const formData = req.body;
+        console.log("Form Data:", formData);
+
+        // Insert form data into collection
+        const result = await formDataCollection.insertOne(formData);
+
+        // Send response to frontend after successful insertion
+        res.json({ code: 200, message: "Form data received successfully" });
+      } catch (error) {
+        console.error("Error occurred while processing form data:", error);
+        res.status(500).json({ code: 500, error: "Internal server error" });
+      }
     });
 
     console.log("connected to database");
@@ -111,8 +121,7 @@ async function run() {
   }
 }
 run().catch(console.dir);
-
-app.get("/", (req, res) => {
+~app.get("/", (req, res) => {
   res.send("cat server running");
 });
 
