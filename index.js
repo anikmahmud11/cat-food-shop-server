@@ -3,8 +3,6 @@ const { MongoClient } = require("mongodb");
 require("dotenv").config();
 const cors = require("cors");
 const res = require("express/lib/response");
-const fs = require("fs");
-const https = require("https");
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -122,27 +120,11 @@ async function run() {
     // await client.close();
   }
 }
-
-app.get("/", (req, res) => {
+run().catch(console.dir);
+~app.get("/", (req, res) => {
   res.send("cat server running");
 });
-// const server = https.createServer(options, app);
-// server.listen(443, () => {
-//   console.log("HTTPS Server running at port 443");
-// });
-const privateKey = fs.readFileSync("./private.key", "utf8");
-const certificate = fs.readFileSync("./certificate.pem", "utf8");
-const credentials = { key: privateKey, cert: certificate };
-const httpsServer = https.createServer(credentials, app);
 
-httpsServer.listen(port, () => {
-  console.log("Server running on port", port);
+app.listen(port, () => {
+  console.log("cat Server running at port", port);
 });
-
-// https.createServer(options, app).listen(port, () => {
-//   console.log(`HTTPS Server running at port ${port}`);
-// });
-// app.listen(port, () => {
-//   console.log("cat Server running at port", port);
-// });
-run().catch(console.dir);
